@@ -7,7 +7,7 @@ import os
 import random
 
 bg_color = '#756b69' #color code for background, it's a medium grey
-font_style = 'Arial 14'
+font_style = 'Arial 12'
 buttonPress = False #condition to see if button was pressed for input
 inputText = '' #variable to take in text input string
 inputLoc = ''
@@ -18,18 +18,18 @@ place=100
 
 #creating the window for the GUI
 root = tk.Tk()
-root.geometry('1500x750')
+root.geometry('1400x750')
 root.title('Main Platform')
 root.resizable(False, False) #canvas acts oddly when you resize the window, so I made it locked in size
 root.configure(background=bg_color)
 
 #create the status image canvas
-status = tk.Text(root, width=65, height=20, bg='white')
+status = tk.Text(root, width=65, height=20, bg='white', wrap=tk.WORD)
 status.pack(anchor=tk.CENTER, expand=True)
 status.place(x=50, y=50)
 
 #create the text box where the story output will be
-output = tk.Text(root, width=128, height=15, bg='white', font = font_style, fg = 'black') #the sizing is based off character length, where everything else is by pixel count
+output = tk.Text(root, width=128, height=15, bg='white', font = font_style, fg = 'black', wrap=tk.WORD) #the sizing is based off character length, where everything else is by pixel count
 output.place(x=50, y=400)
 # add scrollbar
 scrollbar = ttk.Scrollbar(output, orient='vertical', command=output.yview)
@@ -62,7 +62,7 @@ textGrab = tk.StringVar() #tkinter varaible to grab from the input text
 inputStyle = ttk.Style()
 inputStyle.configure("inputStyle.TEntry", width=1, bg='white',fg='black')
 inputBox = ttk.Entry(root, textvariable=textGrab, style='inputStyle.TEntry')
-inputBox.place(x=600, y=370)
+inputBox.place(x=620, y=370)
 
 #create canvas for mini map
 miniMap = tk.Canvas(root, width=400, height=300, bg='white')
@@ -113,15 +113,15 @@ def clearAndInsertText(block, text):
     
 # used as a 'Help' function for a player who doesn't know the full command list    
 def commandList():
-    insertText(status, "\nCommand List:\nenter [ROOM]: enters specified room\n\nenter: enter with no argument brings you back to the main room if you're in an room that's joined to it\n\ncheck [OBJECT]: checks object in current room you're in\n\nheal: if you have painkillers, it heals you (uses 1)\n\nup: if you're in the main room of the floor, allows you raise up a level in the mansion\n\ndown: if you're in the main room of the floor, allows you descend a level")
+    insertText(status, "\nCommand List-------------------------------------\nenter [ROOM]: enters specified room\n\nenter: enter with no argument brings you back to the main room if you're in an room that's joined to it\n\ncheck [OBJECT]: checks object in current room you're in\n\nheal: if you have painkillers, it heals you (uses 1)\n\nup: if you're in the main room of the floor, allows you raise up a level in the mansion\n\ndown: if you're in the main room of the floor, allows you descend a level")
     
 # display seperate command list related to fighting
 def fightCommands(weapon):
-    insertText(output, "You have one of the options above, and you'll continue to do it until either you or the enemy dies\n")
+    #insertText(output, "You have one of the options above, and you'll continue to do it until either you or the enemy dies\n") #TODO: add this somewhere else
     if (weapon == True):
-        clearAndInsertText(status,"\nFight Commands:\npunch: punches enemy, can do 10, 20 or 30 damage, 20% chance of missing\nkick: kicks enemy, can do 30, 40 or 50 damage but has a 50% chance of missing\nshove: does 10 damage, with 0% chance of missing\nslash: slashes enemy, can do 20, 30, or 40 damage, with 10% chance of missing\n\nSYNTAX: fight [CHOICE]")
+        insertText(status,"\nFight Commands-------------------------------------\n\npunch: punches enemy, can do 10, 20 or 30 damage, 20% chance of missing\n\nkick: kicks enemy, can do 30, 40 or 50 damage but has a 50% chance of missing\n\nshove: does 10 damage, with 0% chance of missing\n\nslash: slashes enemy, can do 20, 30, or 40 damage, with 10% chance of missing\n\nSYNTAX: fight [CHOICE]")
     else:
-        clearAndInsertText(status,"\nFight Commands:\npunch: punches enemy, can do 10, 20 or 30 damage, 20% chance of missing\nkick: kicks enemy, can do 30, 40 or 50 damage but has a 50% chance of missing\nshove: does 10 damage, with 0% chance of missing")
+        insertText(status,"\nFight Commands:\npunch: punches enemy, can do 10, 20 or 30 damage, 20% chance of missing\nkick: kicks enemy, can do 30, 40 or 50 damage but has a 50% chance of missing\nshove: does 10 damage, with 0% chance of missing")
 
 #create class for player
 class Player:
@@ -266,6 +266,7 @@ clearAndInsertText(healthStatus, str(main.health))
 #initial prompt
 insertText(output, "You wake up in a strange mansion. You try to leave, but the front door is locked. The knob, strangely, has a key hole. Perhaps you can explore the mansion to find the key.")
 commandList()
+fightCommands(True)
 place=0
 #test text wrapping
 #insertText(output, "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest")   
@@ -374,22 +375,16 @@ def pressChoose():
                 miniMap.coords(location, *move)
                 if (place == 0):
                     clearAndInsertText(output, "You make it back to the Main Room. There are a number of closed doors ahead of you")
-                    commandList()
                 elif (place == 1 or place == 8 or place == 10):
                     clearAndInsertText(output, "You make it into a bathroom. There is a drawer (drawer1), cabinet (cabinet1), and a storage closet (storage)")
-                    commandList()
                 elif (place == 2 or place == 6 or place == 7):
                     clearAndInsertText(output, "You make it into a guest room. There are two dressers (dresser1, dresser2), a bed (bed), and a closet (closet)")
-                    commandList()
                 elif (place == 9):
                     clearAndInsertText(output, "You make it back to the main room. There are a number of closed doors ahead of you")
-                    commandList()
                 elif (place == 3):
                     clearAndInsertText(output, "You make it to the living room. There is a couch (couch) and entertainment center (entertainment)")
-                    commandList()
                 elif (place == 5):
                     clearAndInsertText(output, "You make it to the master bedroom. There are two dressers (dresser1, dresser2), a bed (bed), a bathroom (enter BB), and a closet (closet)")#find a way to lock this closet
-                    commandList()
                 elif (place == 4):
                     clearAndInsertText(output, "You make it to the kitchen. There are 2 drawers (drawer1, drawer2), 3 cabinets (cabinet1, cabinet2, cabinet3), and an oven (oven)")
                 
@@ -422,7 +417,6 @@ def pressChoose():
                 mansion[place].entertainment = main.check(mansion[place].entertainment, main.kitchen_key)
             elif "CLOSET" in inputText:
                 mansion[place].closet = main.check(mansion[place].closet, main.kitchen_key)
-            commandList()
         case inputText if "HEAL" in inputText:
             clearAndInsertText(output, "You chose to heal")
             main.heal()
@@ -430,10 +424,6 @@ def pressChoose():
             main.up()
         case inputText if "DOWN" in inputText:
             down(main.level)
-        case inputText if "HELP" in inputText:
-            commandList()
-        case inputText if "FGUIDE" in inputText:
-            fightCommands(main.knife)
         case inputText if "FIGHT" in inputText:
             while zombieHealth > 0 and main.health > 0:
                 if "PUNCH" in inputText:
@@ -488,6 +478,6 @@ def pressChoose():
 buttonStyle = ttk.Style()
 buttonStyle.configure("buttonStyle.TButton", background=bg_color, bd=0, highlightthickness=0)
 inputButton = ttk.Button(root, text='', command=pressChoose, style='buttonStyle.TButton')
-inputButton.place(x=570, y=370, height=20, width=30)
+inputButton.place(x=590, y=370, height=20, width=30)
 
 root.mainloop()
