@@ -7,6 +7,7 @@ import os
 import random
 
 bg_color = '#756b69' #color code for background, it's a medium grey
+font_style = 'Arial 14'
 buttonPress = False #condition to see if button was pressed for input
 inputText = '' #variable to take in text input string
 inputLoc = ''
@@ -17,9 +18,9 @@ place=100
 
 #creating the window for the GUI
 root = tk.Tk()
-root.geometry('1600x800')
+root.geometry('1500x750')
 root.title('Main Platform')
-root.resizable(width=None, height=None) #canvas acts oddly when you resize the window, so I made it locked in size
+root.resizable(False, False) #canvas acts oddly when you resize the window, so I made it locked in size
 root.configure(background=bg_color)
 
 #create the status image canvas
@@ -28,14 +29,14 @@ status.pack(anchor=tk.CENTER, expand=True)
 status.place(x=50, y=50)
 
 #create the text box where the story output will be
-output = tk.Text(root, width=128, height=15, bg='white', font = 'Arial 16', fg = 'black') #the sizing is based off character length, where everything else is by pixel count
+output = tk.Text(root, width=128, height=15, bg='white', font = font_style, fg = 'black') #the sizing is based off character length, where everything else is by pixel count
 output.place(x=50, y=400)
 # add scrollbar
 scrollbar = ttk.Scrollbar(output, orient='vertical', command=output.yview)
 output['yscrollcommand'] = scrollbar.set
 
 #create health status text box and the label for it
-healthLabel = tk.Label(root, text='Health', font='Arial 16', fg='white', bg=bg_color)
+healthLabel = tk.Label(root, text='Health', font=font_style, fg='white', bg=bg_color)
 healthLabel.place(x=600, y=50)
 healthStatus = tk.Text(root, width=20, height=1, bg='white', fg='black')
 healthStatus.pack(anchor=tk.CENTER, expand=True)
@@ -43,16 +44,16 @@ healthStatus.place(x=600, y=75)
 healthStatus['state'] = 'disabled' #locks the text so you can't edit it
 
 #create list of collected items and the label for it
-itemLabel = tk.Label(root, text='Items', font='Arial 16', fg='white', bg=bg_color)
-itemLabel.place(x=600, y=120)
+itemLabel = tk.Label(root, text='Items', font=font_style, fg='white', bg=bg_color)
+itemLabel.place(x=600, y=100)
 itemStatus = tk.Text(root, width=20, height=13, bg='white', fg='black')
 itemStatus.pack(anchor=tk.CENTER, expand=True)
-itemStatus.place(x=600,y=145)
+itemStatus.place(x=600,y=125)
 itemStatus['state'] = 'disabled'
 
 #create text box and button for inserting choices
-inputLabel = tk.Label(root, text='Input', font='Arial 16', fg='white', bg=bg_color)
-inputLabel.place(x=600, y=325)
+inputLabel = tk.Label(root, text='Input', font=font_style, fg='white', bg=bg_color)
+inputLabel.place(x=600, y=340)
 #inputBox = tk.Text(root, width=15, height=1, bg='white', fg='black', textvariable=textGrab)
 #inputBox.pack(anchor=tk.CENTER, expand=True)
 #inputBox['state']= 'normal'
@@ -61,7 +62,7 @@ textGrab = tk.StringVar() #tkinter varaible to grab from the input text
 inputStyle = ttk.Style()
 inputStyle.configure("inputStyle.TEntry", width=1, bg='white',fg='black')
 inputBox = ttk.Entry(root, textvariable=textGrab, style='inputStyle.TEntry')
-inputBox.place(x=600, y=350)
+inputBox.place(x=600, y=370)
 
 #create canvas for mini map
 miniMap = tk.Canvas(root, width=400, height=300, bg='white')
@@ -159,7 +160,6 @@ class Player:
                     zombieHealth = 150
                 else:
                     clearAndInsertText(output, "You cannot enter the attic without a key")
-                    #enter fight function for mini boss battle
                     
     def down(floor):
         if (floor == 1):
@@ -486,6 +486,6 @@ def pressChoose():
 buttonStyle = ttk.Style()
 buttonStyle.configure("buttonStyle.TButton", background=bg_color, bd=0, highlightthickness=0)
 inputButton = ttk.Button(root, text='', command=pressChoose, style='buttonStyle.TButton')
-inputButton.place(x=570, y=350, height=20, width=30)
+inputButton.place(x=570, y=370, height=20, width=30)
 
 root.mainloop()
