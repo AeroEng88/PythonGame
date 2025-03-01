@@ -24,7 +24,7 @@ root.resizable(False, False) #canvas acts oddly when you resize the window, so I
 root.configure(background=bg_color)
 
 #create the status image canvas
-status = tk.Canvas(root, width=500, height=300, bg='white')
+status = tk.Text(root, width=65, height=20, bg='white')
 status.pack(anchor=tk.CENTER, expand=True)
 status.place(x=50, y=50)
 
@@ -113,15 +113,15 @@ def clearAndInsertText(block, text):
     
 # used as a 'Help' function for a player who doesn't know the full command list    
 def commandList():
-    insertText(output, "\nCommand List:\nenter [ROOM]: enters specified room\nenter: enter with no argument brings you back to the main room if you're in an room that's joined to it\ncheck [OBJECT]: checks object in current room you're in\nheal: if you have painkillers, it heals you (uses 1)\nup: if you're in the main room of the floor, allows you raise up a level in the mansion\ndown: if you're in the main room of the floor, allows you descend a level\nhelp: display command list\nfguide: display command list for fighting")
+    insertText(status, "\nCommand List:\nenter [ROOM]: enters specified room\n\nenter: enter with no argument brings you back to the main room if you're in an room that's joined to it\n\ncheck [OBJECT]: checks object in current room you're in\n\nheal: if you have painkillers, it heals you (uses 1)\n\nup: if you're in the main room of the floor, allows you raise up a level in the mansion\n\ndown: if you're in the main room of the floor, allows you descend a level")
     
 # display seperate command list related to fighting
 def fightCommands(weapon):
-    insertText(output, "You have one of these options, and you'll continue to do it until either you or the enemy dies:\n")
+    insertText(output, "You have one of the options above, and you'll continue to do it until either you or the enemy dies\n")
     if (weapon == True):
-        insertText(output,"\nFight Commands:\npunch: punches enemy, can do 10, 20 or 30 damage, 20% chance of missing\nkick: kicks enemy, can do 30, 40 or 50 damage but has a 50% chance of missing\nshove: does 10 damage, with 0% chance of missing\nslash: slashes enemy, can do 20, 30, or 40 damage, with 10% chance of missing\n\nSYNTAX: fight [CHOICE]")
+        clearAndInsertText(status,"\nFight Commands:\npunch: punches enemy, can do 10, 20 or 30 damage, 20% chance of missing\nkick: kicks enemy, can do 30, 40 or 50 damage but has a 50% chance of missing\nshove: does 10 damage, with 0% chance of missing\nslash: slashes enemy, can do 20, 30, or 40 damage, with 10% chance of missing\n\nSYNTAX: fight [CHOICE]")
     else:
-        insertText(output,"\nFight Commands:\npunch: punches enemy, can do 10, 20 or 30 damage, 20% chance of missing\nkick: kicks enemy, can do 30, 40 or 50 damage but has a 50% chance of missing\nshove: does 10 damage, with 0% chance of missing")
+        clearAndInsertText(status,"\nFight Commands:\npunch: punches enemy, can do 10, 20 or 30 damage, 20% chance of missing\nkick: kicks enemy, can do 30, 40 or 50 damage but has a 50% chance of missing\nshove: does 10 damage, with 0% chance of missing")
 
 #create class for player
 class Player:
@@ -216,6 +216,7 @@ class Player:
             case _:
                 clearAndInsertText(output, "You've already checked this, and it's empty now")
                 return 8
+
 
         
 #create the class for the mansion rooms        
@@ -421,6 +422,7 @@ def pressChoose():
                 mansion[place].entertainment = main.check(mansion[place].entertainment, main.kitchen_key)
             elif "CLOSET" in inputText:
                 mansion[place].closet = main.check(mansion[place].closet, main.kitchen_key)
+            commandList()
         case inputText if "HEAL" in inputText:
             clearAndInsertText(output, "You chose to heal")
             main.heal()
