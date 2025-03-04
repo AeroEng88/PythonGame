@@ -54,9 +54,6 @@ itemStatus['state'] = 'disabled'
 #create text box and button for inserting choices
 inputLabel = tk.Label(root, text='Input', font=font_style, fg='white', bg=bg_color)
 inputLabel.place(x=600, y=340)
-#inputBox = tk.Text(root, width=15, height=1, bg='white', fg='black', textvariable=textGrab)
-#inputBox.pack(anchor=tk.CENTER, expand=True)
-#inputBox['state']= 'normal'
 
 textGrab = tk.StringVar() #tkinter varaible to grab from the input text
 inputStyle = ttk.Style()
@@ -243,7 +240,6 @@ class Room:
                     
                     
 #create main player
-#main = Player(100, 0, 1, False, False, False, False, False)
 main = Player(100, 0, 1, "MR", True, True, True, True, True, False)
                     
 #create list for all the rooms in the mansion
@@ -302,6 +298,7 @@ def checkFight (chance):
         return 50
     else:
         return 0
+    
 
 #function for pressing button, it checks the input string and funnels it into the repsective command function
 zombieHealth=0
@@ -455,13 +452,16 @@ def pressChoose():
                 main.health -= 5
                 
                 insertText(output, "Your health: " + str(main.health) + " zombie health: " + str(zombieHealth))
+                
+        case inputText if "DEV" in inputText:
+            zombieHealth = 50
+            enterFight()
                     
         case _:
             clearAndInsertText(output, "Your input wasn't understood. Make sure you have the right syntax")
     
     if (zombieHealth > 0):
-        clearAndInsertText(output, "You ran into a zombie! Choose one of the options below:\n")
-        fightCommands(main.knife)
+        enterFight()
     elif main.health <= 0:
         clearAndInsertText(output, "You died! Thanks for playing")
     
@@ -471,7 +471,52 @@ def pressChoose():
     inputText = ""
     
 
-    
+def fightChoose():
+    global zombieHealth
+    inputText = textGrab.get().upper()
+
+    if "FIGHT" not in inputText:
+        clearAndInsertText(output, "You need to fight!\nHINT: use FIGHT: [MOVE] to battle the zombie\n")
+        enterFight()
+    else:
+        if "PUNCH" in inputText:
+            hitChance = random.randint(1,5)
+            if hitChance != 1:
+                damage = random.randint(1,3) * 10
+                zombieHealth -= damage
+            else:
+                insertText(output, "You missed!")
+        elif "KICK" in inputText:
+            hitChance = random.randint(1,2)
+            if hitChance != 1:
+                damage = random.randint(3,5) * 10
+                zombieHealth -= damage
+            else:
+                insertText(output, "\nYou missed!")#fix this to not get instasntly zooted by the enterfight text
+        elif "SHOVE" in inputText:
+            zombiehealth -= 10
+        elif "SLASH" in inputText and main.knife == True:
+            hitChance = random.randint(1,10)
+            if hitChance != 1:
+                damage = random.randint(2,4) * 10
+                zombieHealth -= damage
+
+    if zombieHealth > 0:
+        main.health -= 10
+        enterFight()
+    else:
+        inputButton.config(command=pressChoose)
+        clearAndInsertText(output, "You killed the zombie! Continue on your journey!\n")
+
+def enterFight():
+    global zombieHealth
+    inputButton.config(command=fightChoose)
+    if (zombieHealth == 50):
+        clearAndInsertText(output, "You ran into a zombie! Choose one of the from the FIGHT commands!\n")
+    elif (zombieHealth == 150):
+        clearAndInsertText(output, "You ran into a zombie! And this one looks more powerful than the others!\n Choose one of the from the FIGHT commands!\n")
+    else:
+        clearAndInsertText(output, f"The zombie hits you, and the fight continues!\nYour health: {main.health}\tZombie health:{zombieHealth}")
             
 
 # input button. it's at the bottom because the command it calls has to be declared before it
