@@ -305,18 +305,13 @@ zombieHealth=0
 def pressChoose():
     if main.health <= 0:
         showinfo(title='Player Lost!', message='You lost! Restart the game to try again')
+        return
     inputText = textGrab.get().upper() # upper cased the input statement in case a certain function is case sensitive
     print(inputText)
     global place
     global zombieHealth
-    
-    if zombieHealth > 0 and not "FIGHT" in inputText:
-        clearAndInsertText(output, "You need to fight the zombie before you do anything else! Use 'fight [MOVE]' to fight the zombie!")
-        fightCommands(main.knife)
-        return
-            
     match (inputText):
-        case inputText if "ENTER" in inputText:
+        case inputText if "ENTER" in inputText: # move to a room
             match (inputText):
                 #add floor check to know if you could enter the room or not
                 case inputText if "MR" in inputText:
@@ -385,7 +380,7 @@ def pressChoose():
                 elif (place == 4):
                     clearAndInsertText(output, "You make it to the kitchen. There are 2 drawers (drawer1, drawer2), 3 cabinets (cabinet1, cabinet2, cabinet3), and an oven (oven)")
                 
-        case inputText if "CHECK" in inputText:
+        case inputText if "CHECK" in inputText: # check an object
             clearAndInsertText(output, f"You chose to check an object")
             locToInt(main.location, place)
             if "DRESSER1" in inputText:
@@ -421,42 +416,9 @@ def pressChoose():
             main.up()
         case inputText if "DOWN" in inputText:
             down(main.level)
-        case inputText if "FIGHT" in inputText:
-            while zombieHealth > 0 and main.health > 0:
-                if "PUNCH" in inputText:
-                    hitChance = random.randint(1,5)
-                    if hitChance != 1:
-                        damage = random.randint(1,3) * 10
-                        zombieHealth -= damage
-                    else:
-                        insertText(output, "You missed!")
-                elif "KICK" in inputText:
-                    hitChance = random.randint(1,2)
-                    if hitChance != 1:
-                        damage = random.randint(3,5) * 10
-                        zombieHealth -= damage
-                    else:
-                        insertText(output, "You missed!")
-                elif "SHOVE" in inputText:
-                    zombiehealth -= 10
-                elif "SLASH" in inputText and main.knife == True:
-                    hitChance = random.randint(1,10)
-                    if hitChance != 1:
-                        damage = random.randint(2,4) * 10
-                        zombieHealth -= damage
-                        
-                else:
-                    clearAndInsertText(output, "You did not input it correctly!")
-                    break
-                
-                main.health -= 5
-                
-                insertText(output, "Your health: " + str(main.health) + " zombie health: " + str(zombieHealth))
-                
         case inputText if "DEV" in inputText:
             zombieHealth = 50
-            enterFight()
-                    
+            enterFight()              
         case _:
             clearAndInsertText(output, "Your input wasn't understood. Make sure you have the right syntax")
     
@@ -485,7 +447,7 @@ def fightChoose():
                 damage = random.randint(1,3) * 10
                 zombieHealth -= damage
             else:
-                insertText(output, "You missed!")
+                insertText(output, "\nYou missed!")
         elif "KICK" in inputText:
             hitChance = random.randint(1,2)
             if hitChance != 1:
@@ -494,7 +456,7 @@ def fightChoose():
             else:
                 insertText(output, "\nYou missed!")#fix this to not get instasntly zooted by the enterfight text
         elif "SHOVE" in inputText:
-            zombiehealth -= 10
+            zombieHealth -= 10
         elif "SLASH" in inputText and main.knife == True:
             hitChance = random.randint(1,10)
             if hitChance != 1:
@@ -503,6 +465,12 @@ def fightChoose():
 
     if zombieHealth > 0:
         main.health -= 10
+        if main.health <= 0:
+            clearAndInsertText(output, "You died! Thanks for playing")
+            clearAndInsertText(healthStatus, str(main.health))
+            pressChoose()
+            return
+        clearAndInsertText(healthStatus, str(main.health))
         enterFight()
     else:
         inputButton.config(command=pressChoose)
@@ -516,7 +484,7 @@ def enterFight():
     elif (zombieHealth == 150):
         clearAndInsertText(output, "You ran into a zombie! And this one looks more powerful than the others!\n Choose one of the from the FIGHT commands!\n")
     else:
-        clearAndInsertText(output, f"The zombie hits you, and the fight continues!\nYour health: {main.health}\tZombie health:{zombieHealth}")
+        insertText(output, f"The zombie hits you, and the fight continues!\nYour health: {main.health}\t\t\tZombie health:{zombieHealth}")
             
 
 # input button. it's at the bottom because the command it calls has to be declared before it
